@@ -1,0 +1,28 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /tasks/{taskId} {
+      // Solo el dueño autenticado puede leer o eliminar sus tareas
+      allow read, delete: if request.auth != null
+        && resource.data.userId == request.auth.uid;
+
+      // Al crear, el userId debe coincidir con el usuario autenticado y validar tipos básicos
+      allow create: if request.auth != null
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.title is string
+        && request.resource.data.title.size() > 0
+        && request.resource.data.description is string
+        && request.resource.data.completed is bool;
+
+      // Al actualizar, el dueño no puede reasignar la tarea a otro userId
+      allow update: if request.auth != null
+        && resource.data.userId == request.auth.uid
+        && request.resource.data.userId == resource.data.userId
+        && request.resource.data.title is string
+        && request.resource.data.title.size() > 0
+        && request.resource.data.description is string
+        && request.resource.data.completed is bool;
+    }
+  }
+}
