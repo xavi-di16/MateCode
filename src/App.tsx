@@ -1,5 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import { AuthProvider } from './features/auth/AuthContext';
+import { Authenticator } from './features/auth/Authenticator';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { TasksPage } from './pages/TasksPage';
@@ -8,7 +8,7 @@ import { PublicRoute } from './routes/PublicRoute';
 
 export function App() {
   return (
-    <AuthProvider>
+    <Authenticator>
       <BrowserRouter>
         <Routes>
           <Route
@@ -38,7 +38,7 @@ export function App() {
           <Route path="*" element={<Navigate to="/tasks" replace />} />
         </Routes>
       </BrowserRouter>
-    </AuthProvider>
+    </Authenticator>
   );
 }
 
